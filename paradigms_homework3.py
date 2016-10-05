@@ -1,42 +1,49 @@
 import numpy as np
 
 
-def multip(matrix1, matrix2, current_size):
-    if current_size == 1:
+def read_matrix():
+    matrix = np.zeros((size, size), dtype=np.int)
+    for i in range(base_size):
+        matrix[i][:base_size] = list(map(int, input().split()))
+    return matrix
+
+
+def fragmentation(matrix):
+    part1, part2 = np.vsplit(matrix, 2)
+    up_and_left, up_and_right = np.hsplit(part1, 2)
+    down_and_left, down_and_right = np.hsplit(part2, 2)
+    return (up_and_left, down_and_left, up_and_right, down_and_right)
+
+
+def multi(matrix1, matrix2):
+    if matrix1.size == 1:
         return matrix1 * matrix2
     else:
-        s = current_size
-        a_1_1 = matrix1[0:s//2, 0:s//2]
-        a_1_2 = matrix1[0:s//2, s//2:s]
-        a_2_1 = matrix1[s//2:s, 0:s//2]
-        a_2_2 = matrix1[s//2:s, s//2:s]
-        b_1_1 = matrix2[0:s//2, 0:s//2]
-        b_1_2 = matrix2[0:s//2, s//2:s]
-        b_2_1 = matrix2[s//2:s, 0:s//2]
-        b_2_2 = matrix2[s//2:s, s//2:s]
-        p_1 = multip(a_1_1 + a_2_2, b_1_1 + b_2_2, s//2)
-        p_2 = multip(a_2_1 + a_2_2, b_1_1, s//2)
-        p_3 = multip(a_1_1, b_1_2 - b_2_2, s//2)
-        p_4 = multip(a_2_2, b_2_1 - b_1_1, s//2)
-        p_5 = multip(a_1_1 + a_1_2, b_2_2, s//2)
-        p_6 = multip(a_2_1 - a_1_1, b_1_1 + b_1_2, s//2)
-        p_7 = multip(a_1_2 - a_2_2, b_2_1 + b_2_2, s//2)
-        c_1_1 = p_1 + p_4 - p_5 + p_7
-        c_1_2 = p_3 + p_5
-        c_2_1 = p_2 + p_4
-        c_2_2 = p_1 - p_2 + p_3 + p_6
-        return np.vstack((np.hstack((c_1_1, c_1_2)),
-                          np.hstack((c_2_1, c_2_2))))
+        a11, a12, a21, a22 = fragmentation(matrix1)
+        b11, b12, b21, b22 = fragmentation(matrix2)
+        p1 = multi(a11 + a22, b11 + b22)
+        p2 = multi(a21 + a22, b11)
+        p3 = multi(a11, b12 - b22)
+        p4 = multi(a22, b21 - b11)
+        p5 = multi(a11 + a12, b22)
+        p6 = multi(a21 - a11, b11 + b12)
+        p7 = multi(a12 - a22, b21 + b22)
+        c11 = p1 + p4 - p5 + p7
+        c12 = p3 + p5
+        c21 = p2 + p4
+        c22 = p1 - p2 + p3 + p6
+        return np.vstack((np.hstack((c11, c12)),
+                          np.hstack((c21, c22))))
 
-size = input()
-size = int(size)
-a = np.array([[int(j) for j in input().split()] for i in range(size)])
-b = np.array([[int(j) for j in input().split()] for i in range(size)])
-new_size = 1
-while new_size < size:
-    new_size *= 2
-add_right = np.zeros((size, new_size - size))
-add_down = np.zeros((new_size - size, new_size))
-new_b = np.vstack((np.hstack((b, add_right)), add_down))
-new_a = np.vstack((np.hstack((a, add_right)), add_down))
-print(multip(new_a, new_b, new_size)[0:size, 0:size])
+
+base_size = int(input())
+size = 1
+while size < base_size:
+    size *= 2
+a = read_matrix()
+b = read_matrix()
+rezult_matrix = multi(a, b)
+for i in range(base_size):
+    for j in range(base_size):
+        print(rezult_matrix[i][j], end=' ')
+    print()
