@@ -9,16 +9,16 @@ def read_matrix(reading_size, required_size):
 
 
 def split(matrix):
-    left, right = np.vsplit(matrix, 2)
-    return np.hsplit(left, 2) + np.hsplit(right, 2)
+    left, right = np.hsplit(matrix, 2)
+    return np.vsplit(left, 2) + np.vsplit(right, 2)
 
 
 def multi(matrix1, matrix2):
     if matrix1.size == 1:
         return matrix1 * matrix2
     else:
-        a11, a12, a21, a22 = split(matrix1)
-        b11, b12, b21, b22 = split(matrix2)
+        a11, a21, a12, a22 = split(matrix1)
+        b11, b21, b12, b22 = split(matrix2)
         p1 = multi(a11 + a22, b11 + b22)
         p2 = multi(a21 + a22, b11)
         p3 = multi(a11, b12 - b22)
@@ -41,5 +41,5 @@ while shape_size < base_size:
 a = read_matrix(base_size, shape_size)
 b = read_matrix(base_size, shape_size)
 result = multi(a, b)
-for line_matrix in result[:base_size, :base_size]:
-    print(' '.join(map(str, line_matrix)))
+for line in result[:base_size, :base_size]:
+    print(' '.join(map(str, line)))
