@@ -10,8 +10,7 @@ def read_matrix(reading_size, required_size):
 
 def split(matrix):
     left, right = np.vsplit(matrix, 2)
-    return np.hsplit(left, 2)[0], np.hsplit(left, 2)[1],\
-        np.hsplit(right, 2)[0], np.hsplit(right, 2)[1]
+    return np.hsplit(left, 2) + np.hsplit(right, 2)
 
 
 def multi(matrix1, matrix2):
@@ -41,6 +40,6 @@ while shape_size < base_size:
     shape_size *= 2
 a = read_matrix(base_size, shape_size)
 b = read_matrix(base_size, shape_size)
-rezult_matrix = multi(a, b)
-for i in rezult_matrix[0:base_size, 0:base_size]:
-    print(' '.join(map(str, i)))
+result = multi(a, b)
+for line_matrix in result[:base_size, :base_size]:
+    print(' '.join(map(str, line_matrix)))
