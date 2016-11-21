@@ -8,7 +8,7 @@ take' n (x:xs) = x : take' (n - 1) xs
 
 drop' 0 x = x
 drop' n (_:xs) = drop' (n - 1) xs
-drop' n _ = []
+drop' _ _ = []
 
 filter' f (x:xs) | f x = x : filter' f xs
                  | otherwise = filter' f xs
@@ -20,9 +20,9 @@ foldl' _ z _ = z
 concat' (x:xs) y = x : concat' xs y
 concat' _ y = y
 
-quickSort' (x:xs) = concat' (concat' less equal) more
-	where
-		less = quickSort' (filter' (<x) (x:xs))
-	        more = quickSort' (filter' (>x) (x:xs))
-		equal = filter' (==x) (x:xs)
-quickSort' x = x
+quickSort' (x:xs) = concat' (concat' less equal) greater
+          where
+                less = quickSort' (filter' (<x) (x:xs))
+                greater = quickSort' (filter' (>x) (x:xs))
+                equal = filter' (==x) (x:xs)
+quickSort' _ = []
