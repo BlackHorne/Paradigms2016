@@ -22,18 +22,18 @@ delete k (Node (k', v) leftTree rightTree)
                 |k < k' = Node (k', v) (delete k leftTree) rightTree
                 |isEmpty leftTree  = rightTree 
                 |isEmpty rightTree = leftTree
-                |otherwise = (Node minPair leftTree (delete minKey rightTree))
+                |otherwise = Node minPair leftTree (delete minKey rightTree)
                         where 
                                 minPair = findMinPair rightTree
                                 minKey  = findMinKey rightTree
 
-isEmpty (Node (k, v) leftTree rightTree) = False
 isEmpty Nil = True
+isEmpty _ = False
 
 findMinPair (Node (k, v) leftTree _) 
                 |isEmpty leftTree = (k, v)
                 |otherwise = findMinPair leftTree
 
-findMinKey (Node (k, _) leftTree _) 
+findMinKey (Node (k, _) leftTree _)  
                 |isEmpty leftTree = k
                 |otherwise = findMinKey leftTree
