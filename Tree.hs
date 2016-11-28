@@ -20,14 +20,13 @@ delete :: Ord k => k -> BinaryTree k v -> BinaryTree k v
 delete k (Node (k', v) leftTree rightTree)
         |k > k' = Node (k', v) leftTree (delete k rightTree)
         |k < k' = Node (k', v) (delete k leftTree) rightTree
-delete _ (Node (_, _) Nil rightTree) = rightTree
-delete _ (Node (_, _) leftTree Nil)  = leftTree 
-delete _ (Node (k, v) leftTree rightTree) = delParent (Node (k, v) leftTree rightTree)
+delete _ (Node _ leftTree rightTree) = merge leftTree rightTree
 
-delParent (Node (_, _) leftTree rightTree) = Node minPair leftTree (delete minKey rightTree)
-        where minPair = findMinPair rightTree
-              minKey  = fst minPair
+merge leftTree Nil   = leftTree
+merge Nil rightTree  = rightTree
+merge leftTree rightTree = Node minPair leftTree (delete minKey rightTree)
+        where minPair@(minKey, _) = findMinPair rightTree
 
-findMinPair (Node (k, v) Nil _) = (k, v)
-findMinPair (Node (_, _) leftTree _) = findMinPair leftTree
+findMinPair (Node n Nil _) = n
+findMinPair (Node _ leftTree _) = findMinPair leftTree
 
